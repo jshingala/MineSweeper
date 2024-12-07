@@ -5,6 +5,10 @@ import pkgSIRenderEngine.SIRenderer;
 import pkgUtils.SIWindowManager;
 import pkgUtils.SITime;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Driver {
     private SIRenderer renderer;
     private SIWindowManager window;
@@ -12,24 +16,47 @@ public class Driver {
     private SITime timer;
 
     public static void main(String[] args) {
+        if (System.getProperty("os.name").toLowerCase().contains("mac") &&
+                !Boolean.getBoolean("java.awt.headless")) {
+
+            // Only attempt restart once
+            if (!Boolean.getBoolean("restartedOnce")) {
+                System.setProperty("restartedOnce", "true");
+                try {
+                    List<String> command = new ArrayList<>();
+                    command.add("java");  // Use 'java' command directly
+                    command.add("-XstartOnFirstThread");
+                    command.add("-cp");
+                    command.add(System.getProperty("java.class.path"));
+                    command.add(Driver.class.getName());
+
+                    ProcessBuilder pb = new ProcessBuilder(command);
+                    pb.inheritIO();
+                    Process process = pb.start();
+                    System.exit(process.waitFor());
+                } catch (Exception e) {
+                    System.err.println("Failed to restart JVM: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                return;
+            }
+        }
+
         Driver driver = new Driver();
         driver.run(SlSPOT.WIN_WIDTH, SlSPOT.WIN_HEIGHT);
     }
 
     void run(int winWidth, int winHeight) {
         try {
-            // Initialize components
             window = new SIWindowManager(winWidth, winHeight, SlSPOT.WINDOW_TITLE);
             grid = new MinesweeperGrid();
             renderer = new SIRenderer();
             timer = new SITime();
 
-            // Main game loop
             while (!window.shouldClose()) {
-                // Handle window events
                 window.pollEvents();
 
-                // Handle mouse input
                 if (window.isLeftMousePressed()) {
                     int[] gridPos = window.getGridCoordinates();
                     if (gridPos[0] >= 0 && gridPos[1] >= 0 &&
@@ -40,7 +67,6 @@ public class Driver {
                     window.resetMousePress();
                 }
 
-                // Update and render
                 timer.update();
                 renderer.render(grid);
                 window.swapBuffers();
@@ -55,12 +81,8 @@ public class Driver {
 
     private void cleanup() {
         try {
-            if (renderer != null) {
-                renderer.cleanup();
-            }
-            if (window != null) {
-                window.cleanup();
-            }
+            if (renderer != null) renderer.cleanup();
+            if (window != null) window.cleanup();
         } catch (Exception e) {
             System.err.println("Error during cleanup: " + e.getMessage());
             e.printStackTrace();
