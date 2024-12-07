@@ -1,4 +1,4 @@
-package pkgMinesweeperBackend;
+package pkgMinesweeperGrid;
 
 public class Cell {
     private boolean isMine;

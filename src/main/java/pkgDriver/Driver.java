@@ -1,6 +1,6 @@
 package pkgDriver;
 
-import pkgMinesweeperBackend.MinesweeperGrid;
+import pkgMinesweeperGrid.MinesweeperGrid;
 import pkgSIRenderEngine.SIRenderer;
 import pkgUtils.SIWindowManager;
 import pkgUtils.SITime;

@@ -1,7 +1,7 @@
 package pkgSIRenderEngine;
 
-import pkgMinesweeperBackend.MinesweeperGrid;
-import pkgMinesweeperBackend.Cell;
+import pkgMinesweeperGrid.MinesweeperGrid;
+import pkgMinesweeperGrid.Cell;
 import pkgDriver.SlSPOT;
 import static org.lwjgl.opengl.GL11.*;
 
