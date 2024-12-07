@@ -1,4 +1,4 @@
-package pkgMinesweeperBackend;
+package pkgMinesweeperGrid;
 
 import java.util.Random;
 
